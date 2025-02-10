@@ -1,6 +1,6 @@
-#include "Errorif.h"
+#include "ErrorIf.h"
 
-void Errorif(bool b,const char* s)
+void ErrorIf(bool b,const char* s)
 {
     if(b==true)
         {

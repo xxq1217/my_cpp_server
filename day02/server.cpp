@@ -7,7 +7,7 @@
 #include <sys/unistd.h>
 #include <arpa/inet.h>
 
-#include "Errorif.h"
+#include "ErrorIf.h"
 
 int main()
 {
@@ -19,11 +19,11 @@ int main()
     seraddr.sin_addr.s_addr=INADDR_ANY;
     seraddr.sin_port=htons(PORT);
     int serfd=socket(AF_INET,SOCK_STREAM,0);
-    Errorif(serfd==-1,"socket");
-    Errorif(bind(serfd,(sockaddr*)&seraddr,sizeof(seraddr))==-1,"bind");
-    Errorif(listen(serfd,SOMAXCONN)==-1,"listen");
+    ErrorIf(serfd==-1,"socket");
+    ErrorIf(bind(serfd,(sockaddr*)&seraddr,sizeof(seraddr))==-1,"bind");
+    ErrorIf(listen(serfd,SOMAXCONN)==-1,"listen");
     int clifd=accept(serfd,(sockaddr*)&cliaddr,&clilen);
-    Errorif(clifd==-1,"accept");
+    ErrorIf(clifd==-1,"accept");
     printf("fd:%d\nip:%s\nport:%d\n",clifd,inet_ntoa(cliaddr.sin_addr),ntohs(cliaddr.sin_port));
     close(clifd);
     close(serfd);

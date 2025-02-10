@@ -3,4 +3,4 @@
 #include <cstdio>
 #include <cstdlib>
 
-void Errorif(bool,const char*);
+void ErrorIf(bool,const char*);

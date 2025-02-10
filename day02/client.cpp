@@ -5,7 +5,7 @@
 #include <sys/unistd.h>
 #include <arpa/inet.h>
 
-#include "Errorif.h"
+#include "ErrorIf.h"
 
 int main() {
     sockaddr_in serv_addr;
@@ -14,8 +14,8 @@ int main() {
     serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     serv_addr.sin_port = htons(PORT);
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    Errorif(sockfd==-1,"connect");
-    Errorif(connect(sockfd, (sockaddr*)&serv_addr, sizeof(serv_addr))==-1,"connect");
+    ErrorIf(sockfd==-1,"connect");
+    ErrorIf(connect(sockfd, (sockaddr*)&serv_addr, sizeof(serv_addr))==-1,"connect");
     close(sockfd);
     return 0;
 }
