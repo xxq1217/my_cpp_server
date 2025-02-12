@@ -8,6 +8,7 @@ private:
     int fd;
 public:
     TCPSocket();
+    TCPSocket(int);
     void Bind(InetAddress&);
     void Listen();
     int Accept();

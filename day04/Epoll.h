@@ -10,9 +10,9 @@ private:
     epoll_event *events;
 public:
     Epoll();
-    ~Epoll();
-    void AddFd();
+    void AddFd(int,uint32_t);
     void DelFd();
     void ModFd();
     std::vector<epoll_event> poll(int timeout=-1);
+    ~Epoll();
 };

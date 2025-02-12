@@ -13,6 +13,12 @@ TCPSocket::TCPSocket()
     ErrorIf(fd==-1,"socket");
 }
 
+TCPSocket::TCPSocket(int clifd)
+{
+    fd=clifd;
+    ErrorIf(fd==-1,"socket");
+}
+
 void TCPSocket::Bind(InetAddress& inet)
 {
     ErrorIf(bind(fd,inet.ToSockaddrPtr(),inet.GetLen())==-1,"bind");

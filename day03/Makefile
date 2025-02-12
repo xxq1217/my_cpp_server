@@ -1,10 +1,10 @@
 all: server client
 
-server: server.cpp Errorif.cpp
-	g++ server.cpp Errorif.cpp -o server
+server: server.cpp ErrorIf.cpp InetAddress.cpp TCPSocket.cpp
+	g++ server.cpp ErrorIf.cpp InetAddress.cpp TCPSocket.cpp -o server
 
-client: client.cpp Errorif.cpp
-	g++ client.cpp Errorif.cpp -o client
+client: client.cpp ErrorIf.cpp
+	g++ client.cpp ErrorIf.cpp -o client
 
 clean:
 	rm -f server client

@@ -8,24 +8,19 @@
 #include <arpa/inet.h>
 
 #include "ErrorIf.h"
+#include "InetAddress.h"
+#include "TCPSocket.h"
+#include "Epoll.h"
 
 int main()
 {
-    sockaddr_in seraddr,cliaddr;
-    memset(&seraddr,0,sizeof(seraddr));
-    memset(&cliaddr,0,sizeof(cliaddr));
-    socklen_t clilen=sizeof(cliaddr);
-    seraddr.sin_family=AF_INET;
-    seraddr.sin_addr.s_addr=INADDR_ANY;
-    seraddr.sin_port=htons(PORT);
-    int serfd=socket(AF_INET,SOCK_STREAM,0);
-    ErrorIf(serfd==-1,"socket");
-    ErrorIf(bind(serfd,(sockaddr*)&seraddr,sizeof(seraddr))==-1,"bind");
-    ErrorIf(listen(serfd,SOMAXCONN)==-1,"listen");
-    int clifd=accept(serfd,(sockaddr*)&cliaddr,&clilen);
-    ErrorIf(clifd==-1,"accept");
-    printf("fd:%d\nip:%s\nport:%d\n",clifd,inet_ntoa(cliaddr.sin_addr),ntohs(cliaddr.sin_port));
+    InetAddress seraddr(PORT);
+    InetAddress cliaddr;
+    TCPSocket sock;
+    sock.Bind(seraddr);
+    sock.Listen();
+    int clifd=sock.Accept(cliaddr);
+    printf("fd:%d\nip:%s\nport:%d\n",clifd,inet_ntoa(cliaddr.GetAddr().sin_addr),ntohs(cliaddr.GetAddr().sin_port));
     close(clifd);
-    close(serfd);
     return 0;
 }
