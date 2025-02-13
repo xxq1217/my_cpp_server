@@ -14,6 +14,7 @@
 #include "InetAddress.h"
 #include "TCPSocket.h"
 #include "Epoll.h"
+#include "Channel.h"
 
 void handleReadEvent(int sockfd)
 {
@@ -50,28 +51,30 @@ int main()
 {
     InetAddress seraddr(PORT);
     TCPSocket sock;
-    Epoll ep;
+    Epoll* ep=new Epoll;
     sock.SetNonBlocking();
     sock.Bind(seraddr);
     sock.Listen();
-    ep.AddFd(sock.GetFd(),EPOLLIN|EPOLLET);
+    Channel* serch=new Channel(ep,sock.GetFd());
+    ep->AddFd(sock.GetFd(),EPOLLIN|EPOLLET);
     while(true)
     {
-        std::vector<epoll_event>evs=ep.poll();
-        int nfds=evs.size();
+        std::vector<Channel*>chs=ep->poll();
+        //std::vector<epoll_event>evs=ep->poll();
+        int nfds=chs.size();
         for(int i=0;i<nfds;i++)
         {
-            if(evs.at(i).data.fd==sock.GetFd())
+            if(chs.at(i)->GetFd()==sock.GetFd())
             {
                 InetAddress cliaddr;
                 TCPSocket* clisock=new TCPSocket(sock.Accept(cliaddr));
                 printf("fd:%d\nip:%s\nport:%d\n",clisock->GetFd(),inet_ntoa(cliaddr.GetAddr().sin_addr),ntohs(cliaddr.GetAddr().sin_port));
                 clisock->SetNonBlocking();
-                ep.AddFd(clisock->GetFd(), EPOLLIN | EPOLLET);
+                ep->AddFd(clisock->GetFd(), EPOLLIN | EPOLLET);
             }
-            else if (evs[i].events&EPOLLIN)
+            else if (chs[i]->GetRevents()&EPOLLIN)
             {
-                handleReadEvent(evs[i].data.fd);
+                handleReadEvent(chs[i]->GetFd());
             }
             else
             {
@@ -79,5 +82,7 @@ int main()
             }
         }
     }
+    delete ep;
+    delete serch;
     return 0;
 }
